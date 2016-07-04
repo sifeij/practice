@@ -14,6 +14,17 @@ namespace DataStructures
         public Node<T> Head { get; set; }
         public Node<T> Tail { get; set; }
 
+        public int Count {
+            get {
+                var i = 0;
+                var node = Head;
+                while (node != null) {
+                    i += 1;
+                    node = node.Next;
+                }
+                return i;
+            }
+        }
         internal void AddLast(Node<T> node) {
             if (node == null) {
                throw new ArgumentNullException(nameof(node));
@@ -45,6 +56,20 @@ namespace DataStructures
                 Tail.Next = null;
             } else {
                 Head = null;
+            }
+            return result;
+        }
+
+        public T RemoveFirst() {
+            if (Head == null) {
+               throw new Exception("empty list");
+            }
+            var result = Head.Value;
+            Head = Head.Next;
+            if(Head != null) {
+                Head.Previous = null;
+            } else {
+                Tail = null;
             }
             return result;
         }

@@ -82,5 +82,6 @@
 -r:"/Users/sophiejiang/.nuget/packages/System.Threading.Timer/4.0.1/ref/netstandard1.2/System.Threading.Timer.dll"
 -r:"/Users/sophiejiang/.nuget/packages/System.Xml.ReaderWriter/4.0.11/ref/netstandard1.3/System.Xml.ReaderWriter.dll"
 -r:"/Users/sophiejiang/.nuget/packages/System.Xml.XDocument/4.0.11/ref/netstandard1.3/System.Xml.XDocument.dll"
+"/Users/sophiejiang/development/practice/extension-method/EnumExtensions.cs"
 "/Users/sophiejiang/development/practice/extension-method/ExceptionExtensions.cs"
 "/Users/sophiejiang/development/practice/extension-method/Program.cs"

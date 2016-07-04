@@ -34,7 +34,7 @@ namespace TeleprompterConsole
         private static async Task ShowTeleprompter(TeleprompterConfig config) {
             var lines = ReadFrom("Quotes.txt");
             foreach (var line in lines) {
-                Console.WriteLine(line);
+                Console.Write(line);
                 if (!string.IsNullOrEmpty(line)) {
                     await Task.Delay(200);
                 }
@@ -49,10 +49,10 @@ namespace TeleprompterConsole
                 do {
                     var key = Console.ReadKey(true);
                     if (key.KeyChar == '>') {
-                        delay -= 10;
+                        delay -= 50;
                     }
                     else if (key.KeyChar == '<') {
-                        delay += 10;
+                        delay += 50;
                     }
                 } while (!config.Done);
             };

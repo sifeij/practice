@@ -83,3 +83,4 @@
 -r:"/Users/sophiejiang/.nuget/packages/System.Xml.ReaderWriter/4.0.11/ref/netstandard1.3/System.Xml.ReaderWriter.dll"
 -r:"/Users/sophiejiang/.nuget/packages/System.Xml.XDocument/4.0.11/ref/netstandard1.3/System.Xml.XDocument.dll"
 "/Users/sophiejiang/development/practice/TeleprompterConsole/Program.cs"
+"/Users/sophiejiang/development/practice/TeleprompterConsole/TelePrompterConfig.cs"

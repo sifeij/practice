@@ -8,7 +8,7 @@ namespace ConsoleApplication
         public static void Main(string[] args)
         {
             Divide(10, 0);
-            GetDescriptionFromEnum(); 
+            GetDescriptionFromEnum();
         }
 
         static int Divide(int amount, int divideBy)

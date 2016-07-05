@@ -1,7 +1,17 @@
+using System.Runtime.Serialization;
+
 namespace WebAPIClient
 {
-    public class repo
+    [DataContract(Name="repo")]
+    public class Repository
     {
-        public string name;
+        [DataMember(Name="name")]
+        private string _name;
+        public string Name
+        {
+            get { return _name;}
+            set { this._name = value;}
+        }
+        
     }
 }

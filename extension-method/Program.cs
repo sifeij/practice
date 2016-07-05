@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace ConsoleApplication
+namespace ExtensionMethod
 {
     public class Program
     {
@@ -9,6 +9,7 @@ namespace ConsoleApplication
         {
             Divide(10, 0);
             GetDescriptionFromEnum();
+            GetCountWords();
         }
 
         static int Divide(int amount, int divideBy)
@@ -36,6 +37,13 @@ namespace ConsoleApplication
             Console.WriteLine("Name:        " + TestEnums.Library.GetName());
         }
 
+        static void GetCountWords()
+        {
+            var result = 0;
+            result = _testwords.WordCount();
+            Console.WriteLine($"Total number of words in '{_testwords}' is {result}"); 
+        }
+
         enum TestEnums
         {
             [Display(Name = "This is introduction course")]
@@ -45,5 +53,7 @@ namespace ConsoleApplication
             Advanced,
             Library
         }
+
+        readonly static string _testwords = "this extension method will count number of words in it.";
     }
 }

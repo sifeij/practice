@@ -11,10 +11,9 @@ namespace FaroShuffle
             var startingDeck = GetStartingDeck();
             var result = ShuffleCountWhenEqual(startingDeck);
             Console.WriteLine($"It needs {result} times to shuffle back as original deck.");
-            //GetStartingDeckOrigin();
         }
 
-        static int ShuffleCountWhenEqual<T>(IEnumerable<T> startingDeck)
+        static int ShuffleCountWhenEqual(IEnumerable<PlayingCard> startingDeck)
         {
             var times = 0;
             var shuffle = startingDeck;
@@ -26,7 +25,7 @@ namespace FaroShuffle
             return times;
         }
 
-        static IEnumerable<T> Shuffle<T>(IEnumerable<T> deck)
+        static IEnumerable<PlayingCard> Shuffle(IEnumerable<PlayingCard> deck)
         {
             var top = deck.Take(26)
                           .LogQuery("Top Half")
@@ -47,49 +46,100 @@ namespace FaroShuffle
 
             foreach (var c in shuffle)
             {
-                Console.WriteLine(c);
+                Console.WriteLine(c.ToString());
             }
             return shuffle;
         }
 
-        static IEnumerable<dynamic> GetStartingDeck()
+        static IEnumerable<PlayingCard> GetStartingDeck()
         {
-            var startingDeck = (from s in Suits()
-                   from r in Ranks()
-                   select new { Suit = s, Rank = r })
-                   .LogQuery("Starting Deck using ToArray")
+            var startingDeck = (
+                   from s in Suits().LogQuery("Suit Generation")
+                   from r in Ranks().LogQuery("Rank Generation")
+                   select new PlayingCard(s, r))
+                   .LogQuery("Starting Deck")
                    .ToArray();
 
             foreach (var card in startingDeck)
             {
-                Console.WriteLine($"{card.Suit} {card.Rank}");
+                Console.WriteLine($"{card.CardSuit} {card.CardRank}");
             }
             return startingDeck;
         }
 
-        static IEnumerable<string> Suits()
+        // static IEnumerable<string> Suits()
+        // {
+        //     yield return "♠";
+        //     yield return "♦";
+        //     yield return "♥";
+        //     yield return "♣";
+        // }
+
+        // static IEnumerable<string> Ranks()
+        // {
+        //     yield return "2";
+        //     yield return "3";
+        //     yield return "4";
+        //     yield return "5";
+        //     yield return "6";
+        //     yield return "7";
+        //     yield return "8";
+        //     yield return "9";
+        //     yield return "10";
+        //     yield return "J";
+        //     yield return "Q";
+        //     yield return "K";
+        //     yield return "A";
+        // }
+
+        public enum Suit
         {
-            yield return "♠";
-            yield return "♦";
-            yield return "♥";
-            yield return "♣";
+            Clubs,
+            Diamonds,
+            Hearts,
+            Spades
         }
 
-        static IEnumerable<string> Ranks()
+        static IEnumerable<Suit> Suits()
         {
-            yield return "2";
-            yield return "3";
-            yield return "4";
-            yield return "5";
-            yield return "6";
-            yield return "7";
-            yield return "8";
-            yield return "9";
-            yield return "10";
-            yield return "J";
-            yield return "Q";
-            yield return "K";
-            yield return "A";
+            yield return Suit.Clubs;
+            yield return Suit.Diamonds;
+            yield return Suit.Hearts;
+            yield return Suit.Spades;
+        }
+
+        public enum Rank
+        {
+            Two,
+            Three,
+            Four,
+            Five,
+            Six,
+            Seven,
+            Eight,
+            Nine,
+            Ten,
+            Jack,
+            Queen,
+            King,
+            Ace
+        }
+
+        static IEnumerable<Rank> Ranks()
+        {
+            yield return Rank.Two;
+            yield return Rank.Three;
+            yield return Rank.Four;
+            yield return Rank.Five;
+            yield return Rank.Six;
+            yield return Rank.Seven;
+            yield return Rank.Eight;
+            yield return Rank.Nine;
+            yield return Rank.Ten;
+            yield return Rank.Jack;
+            yield return Rank.Queen;
+            yield return Rank.King;
+            yield return Rank.Ace;
         }
     }
 }

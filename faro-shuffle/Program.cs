@@ -9,10 +9,35 @@ namespace FaroShuffle
         public static void Main(string[] args)
         {
             var startingDeck = GetStartingDeck();
-            Shuffle(startingDeck);
+            var result = ShuffleCountWhenEqual(startingDeck);
+            Console.WriteLine($"It needs {result} times to shuffle back as original deck.");
             //GetStartingDeckOrigin();
         }
 
+        static int ShuffleCountWhenEqual<T>(IEnumerable<T> startingDeck)
+        {
+            var times = 0;
+            var shuffle = startingDeck;
+            do
+            {
+                shuffle = Shuffle(shuffle);
+                times++;
+            } while (!startingDeck.SequenceEquals(shuffle));
+            return times;
+        }
+        
+        static IEnumerable<T> Shuffle<T>(IEnumerable<T> deck)
+        {
+            var top = deck.Take(26);
+            var bottom = deck.Skip(26);
+
+            var shuffle = top.InterleaveSequenceWith(bottom);
+            foreach (var c in shuffle)
+            {
+                Console.WriteLine(c);
+            }
+            return shuffle;
+        }
 
         static IEnumerable<dynamic> GetStartingDeck()
         {
@@ -27,17 +52,6 @@ namespace FaroShuffle
             return startingDeck;
         }
 
-        static void Shuffle<T>(IEnumerable<T> startingDeck)
-        {
-            var top = startingDeck.Take(26);
-            var bottom = startingDeck.Skip(26);
-
-            var shuffle = top.InterleaveSequenceWith(bottom);
-            foreach (var c in shuffle)
-            {
-                Console.WriteLine(c);
-            }
-        }
         static IEnumerable<string> Suits()
         {
             yield return "♠";
@@ -62,42 +76,5 @@ namespace FaroShuffle
             yield return "K";
             yield return "A";
         }
-
-        // static void GetStartingDeckOrigin()
-        // {
-        //     var startingDeck = from s in SuitsOrigin()
-        //            from r in RanksOrigin()
-        //            select new { Suit = s, Rank = r };
-
-        //     foreach (var card in startingDeck)
-        //     {
-        //         Console.WriteLine($"{card.Suit} {card.Rank}" );
-        //     }
-        // }
-
-        // static IEnumerable<string> SuitsOrigin()
-        // {
-        //     yield return "clubs";
-        //     yield return "diamonds";
-        //     yield return "hearts";
-        //     yield return "spades";
-        // }
-
-        // static IEnumerable<string> RanksOrigin()
-        // {
-        //     yield return "two";
-        //     yield return "three";
-        //     yield return "four";
-        //     yield return "five";
-        //     yield return "six";
-        //     yield return "seven";
-        //     yield return "eight";
-        //     yield return "nine";
-        //     yield return "ten";
-        //     yield return "jack";
-        //     yield return "queen";
-        //     yield return "king";
-        //     yield return "ace";
-        // }
     }
 }

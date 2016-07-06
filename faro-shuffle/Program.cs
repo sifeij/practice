@@ -25,13 +25,26 @@ namespace FaroShuffle
             } while (!startingDeck.SequenceEquals(shuffle));
             return times;
         }
-        
+
         static IEnumerable<T> Shuffle<T>(IEnumerable<T> deck)
         {
-            var top = deck.Take(26);
-            var bottom = deck.Skip(26);
+            var top = deck.Take(26)
+                          .LogQuery("Top Half")
+                          .ToArray();
+            var bottom = deck.Skip(26)
+                             .LogQuery("Bottom Half")
+                             .ToArray();
 
-            var shuffle = top.InterleaveSequenceWith(bottom);
+            // //in shuffle
+            var shuffle = top.InterleaveSequenceWith(bottom)
+                             .LogQuery("In Shuffle")
+                             .ToArray();
+
+            // //out shuffle
+            // var shuffle = bottom.InterleaveSequenceWith(top)
+            //                     .LogQuery("Out Shuffle")
+            //                     .ToArray();
+
             foreach (var c in shuffle)
             {
                 Console.WriteLine(c);
@@ -41,13 +54,15 @@ namespace FaroShuffle
 
         static IEnumerable<dynamic> GetStartingDeck()
         {
-            var startingDeck = from s in Suits()
+            var startingDeck = (from s in Suits()
                    from r in Ranks()
-                   select new { Suit = s, Rank = r };
+                   select new { Suit = s, Rank = r })
+                   .LogQuery("Starting Deck using ToArray")
+                   .ToArray();
 
             foreach (var card in startingDeck)
             {
-                Console.WriteLine($"{card.Suit} {card.Rank}" );
+                Console.WriteLine($"{card.Suit} {card.Rank}");
             }
             return startingDeck;
         }

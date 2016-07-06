@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 
 namespace FaroShuffle
 {
@@ -31,6 +34,18 @@ namespace FaroShuffle
                 }
             }
             return true;
+        }
+
+        public static IEnumerable<T> LogQuery<T>
+                (this IEnumerable<T> sequence, string tag)
+        {
+            using (var writer = File.AppendText("debug.log"))
+            {
+                DateTime localDate = DateTime.Now;
+                var culture = new CultureInfo("en-US");
+                writer.WriteLine($"{localDate.ToString(culture)} Excecuting Query {tag}");
+            }
+            return sequence;
         }
     }
 }

@@ -19,11 +19,62 @@ namespace MvcMovie.Controllers
             _context = context;    
         }
 
+        // http://localhost:53353/Movies?searchString=ghost
         // GET: Movies
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string movieGenre, string searchString)
         {
-            return View(await _context.Movie.ToListAsync());
+            IQueryable<string> genreQuery = from m in _context.Movie
+                                            orderby m.Genre
+                                            select m.Genre;
+
+            var movies = from m in _context.Movie
+                         select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                movies = movies.Where(s => s.Title.Contains(searchString));
+            }
+
+            if(!String.IsNullOrEmpty(movieGenre))
+            {
+                movies = movies.Where(x => x.Genre == movieGenre);
+            }
+
+            var movieGenreVM = new MovieGenreViewModel();
+            movieGenreVM.genres = new SelectList(await genreQuery.Distinct().ToListAsync());
+            movieGenreVM.movies = await movies.ToListAsync();
+
+            return View(movieGenreVM);
         }
+
+        // in form tag add method attribute to avoid calling this action
+        [HttpPost]
+        public string Index(string searchString, bool notUsed)
+        {
+            return "From [HttpPost]Index: filter on " + searchString;
+        }
+
+        //// http://localhost:53353/Movies/index/ghost
+        //// GET: Movies
+        //public async Task<IActionResult> Index(string id)
+        //{
+        //    //LINQ queries are not executed when they are defined 
+        //    //or when they are modified by calling a method such as 
+        //    //Where, Contains or OrderBy. Instead, query execution 
+        //    //is deferred, which means that the evaluation of an 
+        //    //expression is delayed until its realized value is
+        //    //actually iterated over or the ToListAsync method is called.
+
+        //    var movies = from m in _context.Movie
+        //                 select m;
+
+        //    if (!String.IsNullOrEmpty(id))
+        //    {
+        //        movies = movies.Where(s => s.Title.Contains(id));
+        //    }
+
+        //    return View(await movies.ToListAsync());
+        //}
 
         // GET: Movies/Details/5
         public async Task<IActionResult> Details(int? id)

@@ -10,6 +10,9 @@ using Microsoft.Extensions.Logging;
 
 namespace WebApplication1
 {
+    using Microsoft.Extensions.DependencyInjection.Extensions;
+    using RecipeCalculator.Repository;
+
     public class Startup
     {
         public Startup(IHostingEnvironment env)
@@ -29,6 +32,8 @@ namespace WebApplication1
         {
             // Add framework services.
             services.AddMvc();
+
+            services.TryAddSingleton<IIngredientRepository, IngredientRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

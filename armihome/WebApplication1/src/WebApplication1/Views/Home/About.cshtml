@@ -1,0 +1,111 @@
+﻿@{
+    ViewData["Title"] = "About";
+}
+<h3>@ViewData["Message"]</h3>
+
+<p>
+    The intent of this assignment is to evaluate your design, development, and testing skills. Please
+    approach it as if you were assigned it as part of your daily work. To complete it, you will need to
+    provide a working application with tests written in C#. It's up to you to implement any
+    mechanism you wish to feed data into the application and to display its results.
+    Please do not use any 3rd party components.
+</p>
+
+<p>
+    You're given a list of ingredients and recipes and asked to write an application that computes
+    the following for each recipe:
+
+    <ul>
+        <li>
+            Sales Tax (%8.6 of the total price rounded up to the nearest 7 cents, applies to everything
+            except produce)
+        </li>
+        <li>
+            Wellness Discount (-%5 of the total price rounded up to the nearest cent, applies only to
+            organic items)
+        </li>
+        <li>
+            Total Cost (should include the sales tax and the discount)
+        </li>
+    </ul>
+</p>
+
+<strong>Input</strong>
+<div>
+    <strong>Ingredients:</strong>
+    <div>
+        Produce
+        <ul style="list-style:none">
+            <li>- 1 clove of organic garlic = $0.67</li>
+            <li>- 1 Lemon = $2.03</li>
+            <li>- 1 cup of corn = $0.87</li>
+        </ul>
+
+        Meat/poultry
+        <ul style="list-style:none">
+            <li>- 1 chicken breast = $2.19</li>
+            <li>- 1 slice of bacon = $0.24</li>
+        </ul>
+
+        Pantry
+        <ul style="list-style:none">
+            <li>- 1 ounce of pasta = $0.31</li>
+            <li>- 1 cup of organic olive oil = $1.92</li>
+            <li>- 1 cup of vinegar = $1.26</li>
+            <li>- 1 teaspoon of salt = $0.16</li>
+            <li>- 1 teaspoon of pepper = $0.17</li>
+        </ul>
+
+        Recipe 1
+        <ul style="list-style:none">
+            <li>- 1 garlic clove</li>
+            <li>- 1 lemon</li>
+            <li>- 3/4 cup olive oil</li>
+            <li>- 3/4 teaspoons of salt - 1/2 teaspoons of pepper</li>
+        </ul>
+
+        Recipe 2
+        <ul style="list-style:none">
+            <li>- 1 garlic clove</li>
+            <li>- 4 chicken breasts</li>
+            <li>- 1/2 cup olive oil</li>
+            <li>- 1/2 cup vinegar</li>
+        </ul>
+
+        Recipe 3
+        <ul style="list-style:none">
+            <li>- 1 garlic clove</li>
+            <li>- 4 cups of corn</li>
+            <li>- 4 slices of bacon</li>
+            <li>- 8 ounces of pasta</li>
+            <li>- 1/3 cup olive oil</li>
+            <li>- 1 1/4 teaspoons of salt</li>
+            <li>- 3/4 teaspoons of pepper</li>
+        </ul>
+    </div>
+</div>
+
+<strong>Output</strong>
+<div>
+    Recipe 1
+    <ul style="list-style:none">
+        <li>Tax = $0.21</li>
+        <li>Discount = ($0.11)</li>
+        <li>Total = $4.45</li>
+    </ul>
+    
+    Recipe 2
+    <ul style="list-style:none">
+        <li>Tax = $0.91</li>
+        <li>Discount = ($0.09)</li>
+        <li>Total = $11.84</li>
+    </ul>
+
+    Recipe 3
+    <ul style="list-style:none">
+        <li>Tax = $0.42</li>
+        <li>Discount = ($0.07)</li>
+        <li>Total = $8.91</li>
+    </ul>
+
+</div>

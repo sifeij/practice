@@ -20,10 +20,6 @@
                     UnitPrice * TAX_RATE;
                 return result;
             }
-            set
-            {
-                _taxAmount = value;
-            }
         }
 
         public double DiscountAmount
@@ -34,10 +30,6 @@
                     ? UnitPrice * DISCOUNT_RATE : 
                     0;
                 return result;
-            }
-            set
-            {
-                _discountAmount = value;
             }
         }
 

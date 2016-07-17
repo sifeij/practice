@@ -1,6 +1,25 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Recipe Calculator";
 }
 <h3>@ViewData["Message"]</h3>
 
+<div id="ingredient">
+    <fieldset name="Add Ingredient">
+        <input type="text" id="name" name="name" placeholder="Enter the name of your ingredient">
+        <select id="category" name="category">
+            <option id="0">Produce</option>
+            <option id="1">Meat/Poultry</option>
+            <option id="2">Pantry</option>
+        </select>
+        <label for="isOrganic">Is Organic</label>
+        <input id="isOrganic" name="isOrganic" type="checkbox" />
+        <input id="unitPrice" name="unitPrice" placeholder="Enter the unit price" />
+        <input type="button" value="Add" />
+    </fieldset>
+</div>
 
+<div id="recipe">
+    <select></select>
+    <input type="text" id="quantity" placeholder="Quantity" />
+    <>
+</div>

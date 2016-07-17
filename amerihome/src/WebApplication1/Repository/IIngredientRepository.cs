@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace RecipeCalculator.Repository
 {
@@ -7,7 +8,6 @@ namespace RecipeCalculator.Repository
     public interface IIngredientRepository
     {
         IEnumerable<Ingredient> GetAll();
-        IEnumerable<Ingredient> GetByRecipes(IEnumerable<Recipe> recipes);
-        RecipeCost CaculateCost(IEnumerable<Recipe> recipes);
+        void Add(Ingredient item);
     }
 }

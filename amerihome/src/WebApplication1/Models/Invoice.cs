@@ -1,6 +1,6 @@
 ﻿namespace RecipeCalculator.Models
 {
-    public class RecipeCost
+    public class Invoice
     {
         public double Tax { get; set; }
         public double Discount { get; set; }

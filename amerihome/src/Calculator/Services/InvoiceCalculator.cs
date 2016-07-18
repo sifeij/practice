@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Calculator.Services
 {
     using Models;
     using Repository;
-    using System;
     using Recipe = Dictionary<string, decimal>;
 
     public class InvoiceCalculator : IInvoiceCalculator

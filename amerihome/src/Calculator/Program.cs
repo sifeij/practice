@@ -8,8 +8,8 @@ namespace Calculator
     using Models;
     using Repository;
     using Services;
-    using Recipe = Dictionary<string, decimal>;
     using static Console;
+    using Recipe = Dictionary<string, decimal>;
 
     public class Program
     {

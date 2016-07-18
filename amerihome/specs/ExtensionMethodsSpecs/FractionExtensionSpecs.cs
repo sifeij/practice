@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Xunit;
 
 namespace specs
@@ -48,16 +49,17 @@ namespace specs
 
         [Theory(DisplayName = "Passing invalid string that contains letter, empty or one space string")]
         [InlineData("a")]
-        [InlineData("one")]
         [InlineData("two strings")]
         [InlineData("")]
         [InlineData(" ")]
+        [Trait("Category", "Error Checking")]
         public void Should_throw_FormatException_when_passing_letters_to_convert_to_decimal(string input)
         {
             Assert.Throws<FormatException>(() => input.ParseToDecimal());
         }
 
         [Fact]
+        [Trait("Category", "Error Checking")]
         public void Should_throw_ArgumentNullException_when_convert_to_decimal()
         {
             string input = null;

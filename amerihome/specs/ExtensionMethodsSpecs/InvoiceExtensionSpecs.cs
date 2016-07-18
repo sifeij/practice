@@ -29,6 +29,7 @@ namespace specs
         }
 
         [Fact]
+        [Trait("Category", "Error Checking")]
         public void Should_throw_ArgumentException_when_passing_negative_number_to_round_up_to_7_cents()
         {
             var input = -2.3m;
@@ -36,6 +37,7 @@ namespace specs
         }
 
         [Fact]
+        [Trait("Category", "Error Checking")]
         public void Should_throw_ArgumentException_when_passing_negative_number_to_round_up_to_cents()
         {
             var input = -1.366666m;

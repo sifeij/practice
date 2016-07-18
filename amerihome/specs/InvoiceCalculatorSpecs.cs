@@ -106,6 +106,7 @@ namespace specs
         }
 
         [Fact]
+        [Trait("Category", "Error Checking")]
         public void Should_throw_exception_when_recipe_is_null()
         {
             var invoiceCalculator = _container.Resolve<IInvoiceCalculator>();

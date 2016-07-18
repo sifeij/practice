@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Calculator": {
+      "commandName": "Project",
+      "commandLineArgs": "ingredients.txt recipes.txt"
+    }
+  }
+}

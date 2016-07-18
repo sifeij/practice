@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using Autofac;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace specs
 {
@@ -13,7 +14,7 @@ namespace specs
 
     public partial class InvoiceCalculatorSpecs
     {
-        public InvoiceCalculatorSpecs() {
+        public InvoiceCalculatorSpecs(ITestOutputHelper testOutput) {
             var builder = new ContainerBuilder();
 
             var repo = new InMemoryIngredientRepository();
@@ -27,7 +28,9 @@ namespace specs
             builder.RegisterType<InvoiceCalculator>()
                    .As<IInvoiceCalculator>();
 
-            _container = builder.Build();
+            _container         = builder.Build();
+            _testOutput        = testOutput;
+            _invoiceCalculator = _container.Resolve<IInvoiceCalculator>();
         }
 
         [Theory]
@@ -40,14 +43,12 @@ namespace specs
                                                       decimal quantity,
                                                       decimal expected)
         {
-            var invoiceCalculator = _container.Resolve<IInvoiceCalculator>();
-
-            var recipe = new Recipe
+           var recipe = new Recipe
             {
                 { name, quantity }
             };
 
-            var invoice = invoiceCalculator.CalculateCost(recipe);
+            var invoice = _invoiceCalculator.CalculateCost(recipe);
             Assert.Equal(expected, invoice.Tax);
         }
 
@@ -62,22 +63,19 @@ namespace specs
                                                            decimal quantity,
                                                            decimal expected)
         {
-            var invoiceCalculator = _container.Resolve<IInvoiceCalculator>();
-
             var recipe = new Recipe
             {
                 { name, quantity }
             };
 
-            var invoice = invoiceCalculator.CalculateCost(recipe);
+            var invoice = _invoiceCalculator.CalculateCost(recipe);
             Assert.Equal(expected, invoice.Discount);
         }
 
         [Fact]
         public void Verify_total_on_recipe_3()
         {
-            var invoiceCalculator = _container.Resolve<IInvoiceCalculator>();
-
+            _testOutput.WriteLine("Create No. 3 recipe");
             var recipe = new Recipe
             {
                 { "clove of organic garlic", 1m },
@@ -89,18 +87,17 @@ namespace specs
                 { "teaspoon of pepper", 0.75m }
             };
 
-            var invoice = invoiceCalculator.CalculateCost(recipe);
+            var invoice = _invoiceCalculator.CalculateCost(recipe);
             Assert.Equal("8.91", invoice.Total.ToString("#.##"));
         }
 
         [Fact]
         public void Should_return_invoice_object_when_recipe_is_empty()
         {
-            var invoiceCalculator = _container.Resolve<IInvoiceCalculator>();
-
+            _testOutput.WriteLine("Create an empty recipe");
             Recipe recipe = new Recipe();
 
-            var invoice = invoiceCalculator.CalculateCost(recipe);
+            var invoice = _invoiceCalculator.CalculateCost(recipe);
             Assert.NotNull(invoice);
             Assert.IsType<Invoice>(invoice);
         }
@@ -109,16 +106,18 @@ namespace specs
         [Trait("Category", "Error Checking")]
         public void Should_throw_exception_when_recipe_is_null()
         {
-            var invoiceCalculator = _container.Resolve<IInvoiceCalculator>();
+            _testOutput.WriteLine("Create a null recipe");
             Recipe recipe = null;
 
             ArgumentNullException thrownException = 
                 Assert.Throws<ArgumentNullException>(
-                    () => invoiceCalculator.CalculateCost(recipe));
+                    () => _invoiceCalculator.CalculateCost(recipe));
 
             Assert.Equal("recipe", thrownException.ParamName);
         }
 
-        readonly IContainer _container;
+        readonly IContainer         _container;
+        readonly ITestOutputHelper  _testOutput;
+        readonly IInvoiceCalculator _invoiceCalculator;
     }
 }

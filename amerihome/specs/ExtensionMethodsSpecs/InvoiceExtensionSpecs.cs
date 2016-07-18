@@ -1,9 +1,10 @@
-﻿using Xunit;
+﻿using System;
+
+using Xunit;
 
 namespace specs
 {
     using Calculator;
-    using System;
 
     public class InvoiceExtensionSpecs
     {

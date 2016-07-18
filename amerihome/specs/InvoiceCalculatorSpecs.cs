@@ -111,9 +111,11 @@ namespace specs
             var invoiceCalculator = _container.Resolve<IInvoiceCalculator>();
             Recipe recipe = null;
 
-            Assert.Throws<ArgumentNullException>(
-                () => invoiceCalculator.CalculateCost(recipe));
+            ArgumentNullException thrownException = 
+                Assert.Throws<ArgumentNullException>(
+                    () => invoiceCalculator.CalculateCost(recipe));
 
+            Assert.Equal("recipe", thrownException.ParamName);
         }
 
         readonly IContainer _container;

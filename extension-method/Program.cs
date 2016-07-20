@@ -27,6 +27,7 @@ namespace ExtensionMethod
 
         static void GetDescriptionFromEnum()
         {
+            Console.WriteLine($"test: {TestEnums.Advanced}");
             Console.WriteLine("Description: " + TestEnums.Intro.GetDescription());
             Console.WriteLine("Name:        " + TestEnums.Intro.GetName());
             Console.WriteLine("Description: " + TestEnums.Beginner.GetDescription());
@@ -44,6 +45,7 @@ namespace ExtensionMethod
             Console.WriteLine($"Total number of words in '{_testwords}' is {result}"); 
         }
 
+        [Flags]
         enum TestEnums
         {
             [Display(Name = "This is introduction course")]

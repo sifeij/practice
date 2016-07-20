@@ -6,6 +6,7 @@ namespace System
 {
     public static class EnumExtensions
     {
+        // This extension method can be replaced using [Flags attribute on enum type]
         public static string GetName(this Enum enumValue)
         {
             return Enum.GetName(enumValue.GetType(), enumValue);

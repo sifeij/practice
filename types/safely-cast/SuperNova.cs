@@ -1,0 +1,3 @@
+namespace SafelyCast {
+    class SuperNova { }
+}

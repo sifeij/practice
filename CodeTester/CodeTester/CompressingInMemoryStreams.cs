@@ -37,8 +37,8 @@ namespace CodeTester
         {
             var compressIntoMs = new MemoryStream();
 
-            using (var gzs = new GZipStream(compressIntoMs,
-                                                                 CompressionMode.Compress))
+            using (var gzs = new GZipStream(compressIntoMs, 
+                                            CompressionMode.Compress))
             {
                 gzs.Write(originalBytes, 0, originalBytes.Length);
             }

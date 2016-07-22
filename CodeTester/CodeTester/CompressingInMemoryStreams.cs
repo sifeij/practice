@@ -3,7 +3,7 @@ using System.IO.Compression;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Demos
+namespace CodeTester
 {
     [TestClass]
     public class CompressingInMemoryStreams

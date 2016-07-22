@@ -36,7 +36,7 @@ namespace SafelyCast
         }
         void UseAsOperator(object o)
         {
-            Mammal m = o as Mammal;
+            var m = o as Mammal;
             if (m != null)
             {
                 WriteLine(m.ToString());

@@ -58,6 +58,9 @@
     <Compile Include="SortedCollections.cs" />
     <Compile Include="CompressingInMemoryStreams.cs" />
     <Compile Include="ConvertingCharsToNumbers.cs" />
+    <Compile Include="SupportingClasses\ExceptionReport.cs" />
+    <Compile Include="SupportingClasses\Report.cs" />
+    <Compile Include="LazyInitialization.cs" />
     <Compile Include="WorkingWithUris.cs" />
     <Compile Include="UsingReservedKeywords.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -63,6 +63,7 @@
     <Compile Include="SupportingClasses\Report.cs" />
     <Compile Include="LazyInitialization.cs" />
     <Compile Include="WorkingWithUris.cs" />
+    <Compile Include="WorkingWithZipFiles.cs" />
     <Compile Include="UsingReservedKeywords.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

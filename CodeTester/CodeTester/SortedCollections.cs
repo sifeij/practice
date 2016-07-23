@@ -39,7 +39,7 @@ namespace CodeTester
             s.Add("Amrit", 37);
 
             // will throw exception due to no duplicates are allowed
-            s.Add("Amrit", 37);
+            // s.Add("Amrit", 37);
         }
 
         [TestMethod]
@@ -52,7 +52,7 @@ namespace CodeTester
             s.Add("Amrit", 37);
 
             // will throw exception due to no duplicates are allowed
-            s.Add("Amrit", 37);
+            // s.Add("Amrit", 37);
         }
     }
 }

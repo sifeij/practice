@@ -51,6 +51,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ByStringLengthComparer.cs" />
+    <Compile Include="FileSystemWatcherExample.cs" />
     <Compile Include="IntegerNumberSequenceGeneration.cs" />
     <Compile Include="MergingIEnumberableSequences.cs" />
     <Compile Include="SetOperationsOnIEnumerable.cs" />

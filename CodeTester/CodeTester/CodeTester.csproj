@@ -57,6 +57,7 @@
     <Compile Include="CustomAggregate.cs" />
     <Compile Include="SortedCollections.cs" />
     <Compile Include="CompressingInMemoryStreams.cs" />
+    <Compile Include="ConvertingCharsToNumbers.cs" />
     <Compile Include="WorkingWithUris.cs" />
     <Compile Include="UsingReservedKeywords.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

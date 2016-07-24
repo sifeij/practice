@@ -8,9 +8,7 @@ namespace Calculator.Models
         public decimal Discount { get; set; }
         public decimal Total { get; set; }
 
-        public override String ToString()
-        {
-            return $"\n\tTax=${Tax:0.00}\n\tDiscount=(${Discount:0.00})\n\t${Total:0.00}";
-        }
+        public override String ToString() => 
+            $"\n\tTax=${Tax:0.00}\n\tDiscount=(${Discount:0.00})\n\t${Total:0.00}";
     }
 }

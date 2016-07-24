@@ -28,10 +28,8 @@
             }
         }
 
-        public override string ToString()
-        {
-            return $"{CategoryName}: {Name} => ${UnitPrice} Tax: ${TaxAmount}";
-        }
+        public override string ToString() => 
+            $"{CategoryName}: {Name} => ${UnitPrice} Tax: ${TaxAmount}";
 
         decimal       _taxAmount;
         decimal       _discountAmount;

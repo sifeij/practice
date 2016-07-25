@@ -12,17 +12,17 @@
             {
                 var result = CategoryName == Category.Produce 
                     ? 0m : 
-                    UnitPrice * TAX_RATE;
+                    UnitPrice * TaxRate;
                 return result;
             }
         }
 
-        public decimal DiscountAmount
+        public decimal DiscountAmount 
         {
             get
             {
                 var result = Name.ToLowerInvariant().Contains("organic") 
-                    ? UnitPrice * DISCOUNT_RATE : 
+                    ? UnitPrice * DiscountRate : 
                     0m;
                 return result;
             }
@@ -31,9 +31,11 @@
         public override string ToString() => 
             $"{CategoryName}: {Name} => ${UnitPrice} Tax: ${TaxAmount}";
 
-        decimal       _taxAmount;
-        decimal       _discountAmount;
-        const decimal TAX_RATE = 0.086m;
-        const decimal DISCOUNT_RATE = 0.05m;
+
+        public const decimal TaxRate      = 0.086m;
+        public const decimal DiscountRate = 0.05m;
+
+        decimal _taxAmount;
+        decimal _discountAmount;
     }
 }

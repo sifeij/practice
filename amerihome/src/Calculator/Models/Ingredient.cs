@@ -6,30 +6,18 @@
         public decimal UnitPrice { get; set; }
         public Category CategoryName { get; set; }
 
-        public decimal TaxAmount
-        {
-            get
-            {
-                var result = CategoryName == Category.Produce 
-                    ? 0m : 
-                    UnitPrice * TaxRate;
-                return result;
-            }
-        }
+        public decimal TaxAmount =>
+                            CategoryName == Category.Produce
+                            ? 0m
+                            : UnitPrice * TaxRate;
 
-        public decimal DiscountAmount 
-        {
-            get
-            {
-                var result = Name.ToLowerInvariant().Contains("organic") 
-                    ? UnitPrice * DiscountRate : 
-                    0m;
-                return result;
-            }
-        }
+        public decimal DiscountAmount => 
+                            Name.ToLowerInvariant().Contains("organic")
+                            ? UnitPrice * DiscountRate
+                            : 0m;
 
         public override string ToString() => 
-            $"{CategoryName}: {Name} => ${UnitPrice} Tax: ${TaxAmount}";
+                            $"{CategoryName}: {Name} => ${UnitPrice} Tax: ${TaxAmount}";
 
 
         public const decimal TaxRate      = 0.086m;

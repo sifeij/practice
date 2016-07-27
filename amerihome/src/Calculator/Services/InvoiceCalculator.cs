@@ -17,10 +17,6 @@ namespace Calculator.Services
 
         public Invoice CalculateCost(Recipe recipe)
         {
-            //if(recipe == null)
-            //{
-            //    throw new ArgumentNullException("recipe");
-            //}
             var matchedIngredients = recipe?.Join(_repository.GetAll(),
                                             r => r.Key,
                                             i => i.Name,

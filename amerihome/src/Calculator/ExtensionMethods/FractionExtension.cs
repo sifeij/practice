@@ -6,12 +6,7 @@ namespace Calculator
     {
         public static decimal ParseToDecimal(this string input)
         {
-            //if(input == null)
-            //{
-            //    throw new ArgumentNullException("cannot parse null to decimal");
-            //}
             var numbers = input?.Split(new Char[] { ' ', '/' });
-            var itemCount = numbers.Length;
             var itemCount = numbers?.Length;
 
             if (itemCount == 1) // a whole number: 98

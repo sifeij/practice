@@ -65,13 +65,5 @@ namespace specs
             string input = null;
             Assert.Equal(input, null);
         }
-
-        //[Fact]
-        //[Trait("Category", "Error Checking")]
-        //public void Should_throw_ArgumentNullException_when_convert_null_to_decimal()
-        //{
-        //    string input = null;
-        //    Assert.Throws<ArgumentNullException>(() => input.ParseToDecimal());
-        //}
     }
 }

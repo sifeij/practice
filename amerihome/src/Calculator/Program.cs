@@ -23,8 +23,8 @@ namespace Calculator
                 return;
             }
             var repository = BuildRepository(args[0]);
-            var recipes    = ReadRecipes(args[1]);
-            var service    = new InvoiceCalculator(repository);
+            var recipes = ReadRecipes(args[1]);
+            var service = new InvoiceCalculator(repository);
 
             PrintInvoices(recipes, service);
         }
@@ -37,28 +37,13 @@ namespace Calculator
                 .Skip(1)                    // header row
                 .Select(s => new Ingredient
                 {
-                    Name         = s[0],
-                    CategoryName = Map(s[1]),
-                    UnitPrice    = Decimal.Parse(s[2])
+                    Name = s[0],
+                    CategoryName = IngredientCategory.Map(s[1]),
+                    UnitPrice = Decimal.Parse(s[2])
                 })
                 .ToList()
                 .ForEach(i => repository.Add(i));
             return repository;
-        }
-
-        static Category Map(String str)
-        {
-            switch (str)
-            {
-                case "Produce":
-                    return Category.Produce;
-                case "Meat/poultry":
-                    return Category.MeatPoultry;
-                case "Pantry":
-                    return Category.Pantry;
-                default:
-                    throw new InvalidDataException($"Unknown category {str}");
-            }
         }
         
         static IEnumerable<Recipe> ReadRecipes(string fileName)
@@ -66,7 +51,7 @@ namespace Calculator
             var recipes = File.ReadAllLines(fileName)
                               .Select(s => s.Split(','))
                               .Skip(1)
-                              .GroupBy(s => s[0])
+                              .GroupBy(id => id[0])
                               .Select(g =>
                               {
                                   var recipe = new Recipe();
@@ -83,9 +68,10 @@ namespace Calculator
 
         static void PrintInvoices(IEnumerable<Recipe> recipes, InvoiceCalculator service)
         {
-            for (int i = 0; i < recipes.ToList().Count; i++)
+            var listOfRecipes = recipes.ToList();
+            for (int i = 0; i < listOfRecipes.Count; i++)
             {
-                var invoice = service.CalculateCost(recipes.ToList()[i]);
+                var invoice = service.CalculateCost(listOfRecipes[i]);
                 WriteLine($"Recipe {i + 1}{invoice}\n");
             }
         }

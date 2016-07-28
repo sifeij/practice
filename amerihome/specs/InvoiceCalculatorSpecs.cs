@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using Autofac;
 using Xunit;
@@ -28,8 +27,8 @@ namespace specs
             builder.RegisterType<InvoiceCalculator>()
                    .As<IInvoiceCalculator>();
 
-            _container         = builder.Build();
-            _testOutput        = testOutput;
+            _container = builder.Build();
+            _testOutput = testOutput;
             _invoiceCalculator = _container.Resolve<IInvoiceCalculator>();
         }
 
@@ -112,22 +111,8 @@ namespace specs
             Assert.Equal(recipe, null);
         }
 
-        //[Fact]
-        //[Trait("Category", "Error Checking")]
-        //public void Should_throw_exception_when_recipe_is_null()
-        //{
-        //    _testOutput.WriteLine("Create a null recipe");
-        //    Recipe recipe = null;
-
-        //    ArgumentNullException thrownException =
-        //        Assert.Throws<ArgumentNullException>(
-        //            () => _invoiceCalculator.CalculateCost(recipe));
-
-        //    Assert.Equal("recipe", thrownException.ParamName);
-        //}
-
-        readonly IContainer         _container;
-        readonly ITestOutputHelper  _testOutput;
+        readonly IContainer _container;
+        readonly ITestOutputHelper _testOutput;
         readonly IInvoiceCalculator _invoiceCalculator;
     }
 }

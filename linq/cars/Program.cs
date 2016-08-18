@@ -9,6 +9,128 @@ namespace Cars
     {
         public static void Main(string[] args)
         {
+            SimpleLambdaOperators();
+            JoinTwoTablesWithSingleKey();
+            JoinTwoTablesWithCompositKey();
+        }
+
+        static void JoinTwoTablesWithCompositKey()
+        {
+            var cars = ProcessFile1("fuel.csv");
+            var manufacturers = ProcessManufacturers("manufacturers.csv");
+
+            // *************************** Use query syntax to join ****************************
+
+            var query = 
+                    from car in cars
+                    join manufacturer in manufacturers
+                            on 
+                            new { car.Manufacturer, car.Year }
+                            equals 
+                            new { Manufacturer = manufacturer.Name, manufacturer.Year }
+                    orderby car.Combined descending, car.Name ascending
+                    select new
+                    {
+                        manufacturer.Headquarters,
+                        car.Name,
+                        car.Combined
+                    };
+
+            foreach (var car in query.Take(10))
+            {
+                WriteLine($"{car.Headquarters, -15} : {car.Name, -20} : {car.Combined}");
+            }
+            WriteLine(" ");
+
+            // *************************** Use extension method to join ****************************
+
+            // inner sequency should be a smaller list than outer
+            var query2 =
+                cars.Join(manufacturers,
+                            c => new { c.Manufacturer, c.Year },
+                            m => new { Manufacturer = m.Name, m.Year },
+                            (c, m) => new
+                            {
+                                m.Headquarters,
+                                c.Name,
+                                c.Combined
+                            })
+                    .OrderByDescending(c => c.Combined)
+                    .ThenBy(c => c.Name);
+
+            foreach (var car in query2.Take(10))
+            {
+                WriteLine($"{car.Headquarters, -15} : {car.Name, -20} : {car.Combined}");
+            }
+            WriteLine(" ");
+        }
+
+        static void JoinTwoTablesWithSingleKey()
+        {
+            var cars = ProcessFile1("fuel.csv");
+            var manufacturers = ProcessManufacturers("manufacturers.csv");
+
+            // *************************** Use query syntax to join ****************************
+
+            var query = 
+                    from car in cars
+                    join manufacturer in manufacturers
+                            on car.Manufacturer equals manufacturer.Name
+                    orderby car.Combined descending, car.Name ascending
+                    select new
+                    {
+                        manufacturer.Headquarters,
+                        car.Name,
+                        car.Combined
+                    };
+
+            foreach (var car in query.Take(10))
+            {
+                WriteLine($"{car.Headquarters, -15} : {car.Name, -20} : {car.Combined}");
+            }
+            WriteLine(" ");
+
+            // *************************** Use extension method to join ****************************
+
+            // inner sequency should be a smaller list than outer
+            var query2 =
+                cars.Join(manufacturers,
+                            c => c.Manufacturer,
+                            m => m.Name,
+                            (c, m) => new
+                            {
+                                m.Headquarters,
+                                c.Name,
+                                c.Combined
+                            })
+                    .OrderByDescending(c => c.Combined)
+                    .ThenBy(c => c.Name);
+
+            foreach (var car in query2.Take(10))
+            {
+                WriteLine($"{car.Headquarters, -15} : {car.Name, -20} : {car.Combined}");
+            }
+            WriteLine(" ");
+        }
+
+        static List<Manufacturer> ProcessManufacturers(string path)
+        {
+            var query = File.ReadAllLines(path)
+                            .Where(l => l.Length > 1)
+                            .Select(l =>
+                            {
+                                var columns = l.Split(',');
+                                return new Manufacturer
+                                {
+                                    Name = columns[0],
+                                    Headquarters = columns[1],
+                                    Year = int.Parse(columns[2])
+                                };
+                            });
+            return query.ToList();
+        }
+        static void SimpleLambdaOperators()
+        {
             // ********************** Extension Method Syntax 1 *************************
 
             var cars = ProcessFile1("fuel.csv");
@@ -72,7 +194,7 @@ namespace Cars
             WriteLine("does cars contain an item: " + result3);
             WriteLine(" ");
 
-            // ************************ SelectMany() method ***********************
+            // ************************ SelectMany() method to flatten data ***********************
 
             var result = cars.SelectMany(c => c.Name)
                              .OrderBy(c => c);
@@ -82,7 +204,6 @@ namespace Cars
                 WriteLine(character);
             }
         }
-
         static List<Car> ProcessFile1(string path)
         {
             return

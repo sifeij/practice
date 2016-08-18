@@ -10,13 +10,245 @@ namespace Cars
         public static void Main(string[] args)
         {
             SimpleLambdaOperators();
+            WriteLine("*********************************************************************");
             JoinTwoTablesWithSingleKey();
+            WriteLine("*********************************************************************");
             JoinTwoTablesWithCompositKey();
+            WriteLine("*********************************************************************");
+
+            //To Get Top 2 Most Fuel Efficiency Cars Of Each Manufacturer
+            GroupByWithQuerySyntax();
+            WriteLine("*********************************************************************");
+            GroupByWithExensionMethods();
+            WriteLine("*********************************************************************");
+            GroupJoinWithQuerySyntax();
+            WriteLine("*********************************************************************");
+            GroupJoinWithExtensionMethods();
+            WriteLine("*********************************************************************");
+
+            //Get Top 3 Most Fuel Efficiency Cars Of Each Headquarter
+            DeepGroupJoinWithQuerySyntax();
+            WriteLine("*********************************************************************");
+            DeepGroupJoinWithExtensionMethods();
+            WriteLine("*********************************************************************");
+
+            //Get max min avg per manufacturer
+            AggregationWithQuerySyntax();
+            WriteLine("*********************************************************************");
+            AggregationWithExtensionMethods();
+            WriteLine("*********************************************************************");
+        }
+
+        static void AggregationWithExtensionMethods()
+        {
+            var cars = ProcessFileUseLambda("fuel.csv");
+            var manufacturers = ProcessManufacturers("manufacturers.csv");
+
+            var query =
+                cars.GroupBy(c => c.Manufacturer)
+                    .Select(g =>
+                    {
+                        var results = g.Aggregate(
+                                                    new CarStatistics(),
+                                                    (acc, c) => acc.Accumulate(c),
+                                                    acc => acc.Compute()
+                                                 );
+                        return new
+                        {
+                            Name = g.Key,
+                            Avg = results.Average,
+                            Min = results.Min,
+                            Max = results.Max
+                        };
+                    })
+                    .OrderByDescending(r => r.Max);
+
+            foreach (var result in query)
+            {
+                WriteLine($"{result.Name}");
+                WriteLine($"\t Max : {result.Max}");
+                WriteLine($"\t Min : {result.Min}");
+                WriteLine($"\t Avg : {result.Avg}");
+            }
+        }
+
+        static void AggregationWithQuerySyntax()
+        {
+            var cars = ProcessFileUseLambda("fuel.csv");
+            var manufacturers = ProcessManufacturers("manufacturers.csv");
+
+            var query = 
+                from car in cars
+                group car by car.Manufacturer into carGroup
+                select new
+                {
+                    Name = carGroup.Key,
+                    Max = carGroup.Max(c => c.Combined),
+                    Min = carGroup.Min(c => c.Combined),
+                    Avg = carGroup.Average(c => c.Combined)
+                } into result
+                orderby result.Max descending
+                select result;
+
+            foreach (var result in query)
+            {
+                WriteLine($"{result.Name}");
+                WriteLine($"\t Max : {result.Max}");
+                WriteLine($"\t Min : {result.Min}");
+                WriteLine($"\t Avg : {result.Avg}");
+            }
+        }
+
+        static void DeepGroupJoinWithExtensionMethods()
+        {
+            var cars = ProcessFileUseLambda("fuel.csv");
+            var manufacturers = ProcessManufacturers("manufacturers.csv");
+
+            var query = manufacturers.GroupJoin(
+                                        cars,
+                                        m => m.Name,
+                                        c => c.Manufacturer,
+                                        (m, g) =>
+                                            new {
+                                                Manufacturer = m,
+                                                Cars = g
+                                            })
+                                     .GroupBy(m => m.Manufacturer.Headquarters);
+
+            foreach (var group in query)
+            {
+                WriteLine($"{group.Key}");
+                foreach (var car in group.SelectMany(g => g.Cars)
+                                         .OrderByDescending(c => c.Combined)
+                                         .Take(3))
+                {
+                    WriteLine($"\t{car.Name} : {car.Combined}");
+                }
+            }
+        }
+
+        static void DeepGroupJoinWithQuerySyntax()
+        {
+            var cars = ProcessFileUseLambda("fuel.csv");
+            var manufacturers = ProcessManufacturers("manufacturers.csv");
+
+            var query = from manufacturer in manufacturers
+                        join car in cars
+                            on manufacturer.Name
+                            equals car.Manufacturer
+                            into carGroup
+                        orderby manufacturer.Name
+                        select new
+                                {
+                                    Manufacturer = manufacturer,
+                                    Cars = carGroup
+                                } into result
+                        group result by result.Manufacturer.Headquarters;
+
+            foreach (var group in query)
+            {
+                WriteLine($"{group.Key}");
+                foreach (var car in group.SelectMany(g => g.Cars)
+                                         .OrderByDescending(c => c.Combined)
+                                         .Take(3))
+                {
+                    WriteLine($"\t{car.Name} : {car.Combined}");
+                }
+            }
+        }
+
+        static void GroupJoinWithExtensionMethods()
+        {
+            var cars = ProcessFileUseLambda("fuel.csv");
+            var manufacturers = ProcessManufacturers("manufacturers.csv");
+
+            var query = manufacturers.GroupJoin(
+                                        cars,
+                                        m => m.Name,
+                                        c => c.Manufacturer,
+                                        (m, g) =>
+                                            new {
+                                                Manufacturer = m,
+                                                Cars = g
+                                            })
+                                     .OrderBy(m => m.Manufacturer.Name);
+
+            foreach (var group in query)
+            {
+                WriteLine($"{group.Manufacturer.Name} has {group.Manufacturer.Headquarters} cars");
+                foreach (var car in group.Cars
+                                         .OrderByDescending(c => c.Combined)
+                                         .Take(2))
+                {
+                    WriteLine($"\t{car.Name} : {car.Combined}");
+                }
+            }
+        }
+
+        static void GroupJoinWithQuerySyntax()
+        {
+            var cars = ProcessFileUseLambda("fuel.csv");
+            var manufacturers = ProcessManufacturers("manufacturers.csv");
+
+            var query = from manufacturer in manufacturers
+                        join car in cars
+                            on manufacturer.Name
+                            equals car.Manufacturer
+                            into carGroup
+                        orderby manufacturer.Name
+                        select new
+                                {
+                                    Manufacturer = manufacturer,
+                                    Cars = carGroup
+                                };
+
+            foreach (var group in query)
+            {
+                WriteLine($"{group.Manufacturer.Name} has {group.Manufacturer.Headquarters} cars");
+                foreach (var car in group.Cars
+                                         .OrderByDescending(c => c.Combined)
+                                         .Take(2))
+                {
+                    WriteLine($"\t{car.Name} : {car.Combined}");
+                }
+            }
+        }
+
+        static void GroupByWithExensionMethods()
+        {
+            var cars = ProcessFileUseLambda("fuel.csv");
+            var manufacturers = ProcessManufacturers("manufacturers.csv");
+
+            var query = cars.GroupBy(c => c.Manufacturer.ToUpper())
+                            .OrderBy(g => g.Key);
+        }
+
+        static void GroupByWithQuerySyntax()
+        {
+            var cars = ProcessFileUseLambda("fuel.csv");
+            var manufacturers = ProcessManufacturers("manufacturers.csv");
+
+            var query = from car in cars
+                        group car by car.Manufacturer.ToUpper()
+                                into manufacturer
+                        orderby manufacturer.Key
+                        select manufacturer;
+
+            foreach (var group in query)
+            {
+                WriteLine($"{group.Key} has {group.Count()} cars");
+                foreach (var car in group
+                                        .OrderByDescending(c => c.Combined)
+                                        .Take(2))
+                {
+                    WriteLine($"\t{car.Name} : {car.Combined}");
+                }
+            }
         }
 
         static void JoinTwoTablesWithCompositKey()
         {
-            var cars = ProcessFile1("fuel.csv");
+            var cars = ProcessFileUseLambda("fuel.csv");
             var manufacturers = ProcessManufacturers("manufacturers.csv");
 
             // *************************** Use query syntax to join ****************************
@@ -67,7 +299,7 @@ namespace Cars
 
         static void JoinTwoTablesWithSingleKey()
         {
-            var cars = ProcessFile1("fuel.csv");
+            var cars = ProcessFileUseLambda("fuel.csv");
             var manufacturers = ProcessManufacturers("manufacturers.csv");
 
             // *************************** Use query syntax to join ****************************
@@ -133,7 +365,7 @@ namespace Cars
         {
             // ********************** Extension Method Syntax 1 *************************
 
-            var cars = ProcessFile1("fuel.csv");
+            var cars = ProcessFileUseLambda("fuel.csv");
 
             var top = cars.OrderByDescending(c => c.Combined)
                             .ThenBy(c => c.Name)
@@ -146,7 +378,7 @@ namespace Cars
 
             // ********************** Extension Method Syntax 2 *************************
 
-            var cars1 = ProcessFile1("fuel.csv");
+            var cars1 = ProcessFileUseLambda("fuel.csv");
             var query1 = cars1.Where(c => c.Manufacturer == "BMW" 
                                     && c.Year == 2016)
                               .OrderByDescending(c => c.Combined)
@@ -160,7 +392,7 @@ namespace Cars
 
             // ************************ Query Syntax ***********************
             
-            var cars2 = ProcessFile2("fuel.csv");
+            var cars2 = ProcessFileUseLinqQuery("fuel.csv");
             var query2 = 
                     from car in cars2
                     where car.Manufacturer == "BMW" 
@@ -204,7 +436,7 @@ namespace Cars
                 WriteLine(character);
             }
         }
-        static List<Car> ProcessFile1(string path)
+        static List<Car> ProcessFileUseLambda(string path)
         {
             return
                 File.ReadAllLines(path)
@@ -217,7 +449,7 @@ namespace Cars
                     .ToList();
         }
 
-        static List<Car> ProcessFile2(string path)
+        static List<Car> ProcessFileUseLinqQuery(string path)
         {
             var query =
                     from line in File.ReadAllLines(path).Skip(1)

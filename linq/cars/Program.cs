@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Xml;
+using System.Xml.Linq;
 using static System.Console;
 
 namespace Cars
@@ -9,34 +12,132 @@ namespace Cars
     {
         public static void Main(string[] args)
         {
-            SimpleLambdaOperators();
-            WriteLine("*********************************************************************");
-            JoinTwoTablesWithSingleKey();
-            WriteLine("*********************************************************************");
-            JoinTwoTablesWithCompositKey();
-            WriteLine("*********************************************************************");
+            // SimpleLambdaOperators();
+            // WriteLine("*********************************************************************");
+            // JoinTwoTablesWithSingleKey();
+            // WriteLine("*********************************************************************");
+            // JoinTwoTablesWithCompositKey();
+            // WriteLine("*********************************************************************");
 
-            //To Get Top 2 Most Fuel Efficiency Cars Of Each Manufacturer
-            GroupByWithQuerySyntax();
-            WriteLine("*********************************************************************");
-            GroupByWithExensionMethods();
-            WriteLine("*********************************************************************");
-            GroupJoinWithQuerySyntax();
-            WriteLine("*********************************************************************");
-            GroupJoinWithExtensionMethods();
-            WriteLine("*********************************************************************");
+            // //To Get Top 2 Most Fuel Efficiency Cars Of Each Manufacturer
+            // GroupByWithQuerySyntax();
+            // WriteLine("*********************************************************************");
+            // GroupByWithExensionMethods();
+            // WriteLine("*********************************************************************");
+            // GroupJoinWithQuerySyntax();
+            // WriteLine("*********************************************************************");
+            // GroupJoinWithExtensionMethods();
+            // WriteLine("*********************************************************************");
 
-            //Get Top 3 Most Fuel Efficiency Cars Of Each Headquarter
-            DeepGroupJoinWithQuerySyntax();
-            WriteLine("*********************************************************************");
-            DeepGroupJoinWithExtensionMethods();
-            WriteLine("*********************************************************************");
+            // //Get Top 3 Most Fuel Efficiency Cars Of Each Headquarter
+            // DeepGroupJoinWithQuerySyntax();
+            // WriteLine("*********************************************************************");
+            // DeepGroupJoinWithExtensionMethods();
+            // WriteLine("*********************************************************************");
 
-            //Get max min avg per manufacturer
-            AggregationWithQuerySyntax();
-            WriteLine("*********************************************************************");
-            AggregationWithExtensionMethods();
-            WriteLine("*********************************************************************");
+            // //Get max min avg per manufacturer
+            // AggregationWithQuerySyntax();
+            // WriteLine("*********************************************************************");
+            // AggregationWithExtensionMethods();
+            // WriteLine("*********************************************************************");
+        
+            // Linq Xml
+            SerializeXmlToXmlWriter();
+            SerializeXmlToTextWriter();
+            CreateXml();
+            QueryXml();
+        }
+
+        static void QueryXml()
+        {
+            var document = XDocument.Load("fuel.xml");
+
+            var query =
+                // from element in document.Descendants()
+                from element in document.Element("Cars").Elements("Car")
+                where element.Attribute("Manufacturer")?.Value == "BMW"
+                select element.Attribute("Name").Value;
+            
+            foreach (var name in query)
+            {
+                WriteLine(name);
+            }
+        }
+
+        static void SerializeXmlToXmlWriter()
+        {
+            var records = ProcessCars("fuel.csv");
+
+            var sb = new StringBuilder();
+            var xws = new XmlWriterSettings();
+            xws.OmitXmlDeclaration = true;
+            xws.Indent = true;
+
+            using (var xw = System.Xml.XmlWriter.Create(sb, xws)) {
+                var doc = new XDocument(
+                    new XElement("Cars",
+                    from record in records
+                    select new XElement("Car",
+                                    new XAttribute("Name", record.Name),
+                                    new XAttribute("Combined", record.Combined),
+                                    new XAttribute("Manufacturer", record.Manufacturer))
+                )
+                );
+                doc.Save(xw);
+            }
+
+            WriteLine(sb.ToString());
+        }
+        static void SerializeXmlToTextWriter()
+        {
+            var records = ProcessCars("fuel.csv");
+
+            var document = new XDocument();
+            var cars = new XElement("Cars",
+
+                from record in records
+                select new XElement("Car",
+                                new XAttribute("Name", record.Name),
+                                new XAttribute("Combined", record.Combined),
+                                new XAttribute("Manufacturer", record.Manufacturer))
+            );
+            document.Add(cars);
+            
+            var sb = new StringBuilder();
+            var tr = new StringWriter(sb);
+
+            document.Save(tr);
+            WriteLine(sb.ToString());
+        }
+
+        static void CreateXml()
+        {
+            var records = ProcessCars("fuel.csv");
+
+            var document = new XDocument(
+                new XElement("Cars",
+                    from record in records
+                    select new XElement("Car",
+                                    new XAttribute("Name", record.Name),
+                                    new XAttribute("Combined", record.Combined),
+                                    new XAttribute("Manufacturer", record.Manufacturer))
+                )
+            );
+
+            // document.Save("fuel.xml");
+            // WriteLine(File.ReadAllText("fuel.xml"));
+        }
+
+        static List<Car> ProcessCars(string path)
+        {
+            var query =
+
+                File.ReadAllLines(path)
+                    .Skip(1)
+                    .Where(l => l.Length > 1)
+                    .ToCars();
+
+            return query.ToList();
         }
 
         static void AggregationWithExtensionMethods()
@@ -77,7 +178,7 @@ namespace Cars
             var cars = ProcessFileUseLambda("fuel.csv");
             var manufacturers = ProcessManufacturers("manufacturers.csv");
 
-            var query = 
+            var query =
                 from car in cars
                 group car by car.Manufacturer into carGroup
                 select new
@@ -109,7 +210,8 @@ namespace Cars
                                         m => m.Name,
                                         c => c.Manufacturer,
                                         (m, g) =>
-                                            new {
+                                            new
+                                            {
                                                 Manufacturer = m,
                                                 Cars = g
                                             })
@@ -139,10 +241,10 @@ namespace Cars
                             into carGroup
                         orderby manufacturer.Name
                         select new
-                                {
-                                    Manufacturer = manufacturer,
-                                    Cars = carGroup
-                                } into result
+                        {
+                            Manufacturer = manufacturer,
+                            Cars = carGroup
+                        } into result
                         group result by result.Manufacturer.Headquarters;
 
             foreach (var group in query)
@@ -167,7 +269,8 @@ namespace Cars
                                         m => m.Name,
                                         c => c.Manufacturer,
                                         (m, g) =>
-                                            new {
+                                            new
+                                            {
                                                 Manufacturer = m,
                                                 Cars = g
                                             })
@@ -197,10 +300,10 @@ namespace Cars
                             into carGroup
                         orderby manufacturer.Name
                         select new
-                                {
-                                    Manufacturer = manufacturer,
-                                    Cars = carGroup
-                                };
+                        {
+                            Manufacturer = manufacturer,
+                            Cars = carGroup
+                        };
 
             foreach (var group in query)
             {
@@ -253,12 +356,12 @@ namespace Cars
 
             // *************************** Use query syntax to join ****************************
 
-            var query = 
+            var query =
                     from car in cars
                     join manufacturer in manufacturers
-                            on 
+                            on
                             new { car.Manufacturer, car.Year }
-                            equals 
+                            equals
                             new { Manufacturer = manufacturer.Name, manufacturer.Year }
                     orderby car.Combined descending, car.Name ascending
                     select new
@@ -270,7 +373,7 @@ namespace Cars
 
             foreach (var car in query.Take(10))
             {
-                WriteLine($"{car.Headquarters, -15} : {car.Name, -20} : {car.Combined}");
+                WriteLine($"{car.Headquarters,-15} : {car.Name,-20} : {car.Combined}");
             }
             WriteLine(" ");
 
@@ -292,7 +395,7 @@ namespace Cars
 
             foreach (var car in query2.Take(10))
             {
-                WriteLine($"{car.Headquarters, -15} : {car.Name, -20} : {car.Combined}");
+                WriteLine($"{car.Headquarters,-15} : {car.Name,-20} : {car.Combined}");
             }
             WriteLine(" ");
         }
@@ -304,7 +407,7 @@ namespace Cars
 
             // *************************** Use query syntax to join ****************************
 
-            var query = 
+            var query =
                     from car in cars
                     join manufacturer in manufacturers
                             on car.Manufacturer equals manufacturer.Name
@@ -318,7 +421,7 @@ namespace Cars
 
             foreach (var car in query.Take(10))
             {
-                WriteLine($"{car.Headquarters, -15} : {car.Name, -20} : {car.Combined}");
+                WriteLine($"{car.Headquarters,-15} : {car.Name,-20} : {car.Combined}");
             }
             WriteLine(" ");
 
@@ -340,7 +443,7 @@ namespace Cars
 
             foreach (var car in query2.Take(10))
             {
-                WriteLine($"{car.Headquarters, -15} : {car.Name, -20} : {car.Combined}");
+                WriteLine($"{car.Headquarters,-15} : {car.Name,-20} : {car.Combined}");
             }
             WriteLine(" ");
         }
@@ -369,33 +472,33 @@ namespace Cars
 
             var top = cars.OrderByDescending(c => c.Combined)
                             .ThenBy(c => c.Name)
-                            .FirstOrDefault(c => c.Manufacturer == "BMW" 
+                            .FirstOrDefault(c => c.Manufacturer == "BMW"
                                             && c.Year == 2016);
 
-                
-            WriteLine($"{top.Manufacturer} : {top.Name, -25} : {top.Combined}");
+
+            WriteLine($"{top.Manufacturer} : {top.Name,-25} : {top.Combined}");
             WriteLine(" ");
 
             // ********************** Extension Method Syntax 2 *************************
 
             var cars1 = ProcessFileUseLambda("fuel.csv");
-            var query1 = cars1.Where(c => c.Manufacturer == "BMW" 
+            var query1 = cars1.Where(c => c.Manufacturer == "BMW"
                                     && c.Year == 2016)
                               .OrderByDescending(c => c.Combined)
                               .ThenBy(c => c.Name);
 
             foreach (var car in query1.Take(10))
             {
-                WriteLine($"{car.Manufacturer} : {car.Name, -25} : {car.Combined}");
+                WriteLine($"{car.Manufacturer} : {car.Name,-25} : {car.Combined}");
             }
             WriteLine(" ");
 
             // ************************ Query Syntax ***********************
-            
+
             var cars2 = ProcessFileUseLinqQuery("fuel.csv");
-            var query2 = 
+            var query2 =
                     from car in cars2
-                    where car.Manufacturer == "BMW" 
+                    where car.Manufacturer == "BMW"
                             && car.Year == 2016
                     orderby car.Name ascending
                     select new                  // returns an anoymous type instead of "select car"
@@ -407,7 +510,7 @@ namespace Cars
 
             foreach (var car in query2.Take(10))
             {
-                WriteLine($"{car.Manufacturer} : {car.Name, -25} : {car.Combined}");
+                WriteLine($"{car.Manufacturer} : {car.Name,-25} : {car.Combined}");
             }
             WriteLine(" ");
 
@@ -421,7 +524,7 @@ namespace Cars
             WriteLine("are there all cars manfacturer BMW? " + result2);
             WriteLine(" ");
 
-            var item = new Car { Manufacturer = "BMW"};
+            var item = new Car { Manufacturer = "BMW" };
             var result3 = cars.Contains(item);
             WriteLine("does cars contain an item: " + result3);
             WriteLine(" ");

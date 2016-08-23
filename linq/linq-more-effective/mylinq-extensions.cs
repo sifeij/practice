@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace MoreEffectiveLinq
 {
-    static class MyLinqExtensions
+    static partial class MyLinqExtensions
     {
         public static TimeSpan Sum(
             this IEnumerable<TimeSpan> times)

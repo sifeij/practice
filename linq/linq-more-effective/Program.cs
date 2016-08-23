@@ -42,8 +42,32 @@ namespace MoreEffectiveLinq
 
             WriteLine("*************** Parse Question Use Batch extension ****************");
             ParseQuestionsUseBatchExtension();
+
+            WriteLine("*************** Num Of Day Of Consecutive Sales *******************");
+            NumOfDaysOfConsecutiveSales();
         }
 
+        static void NumOfDaysOfConsecutiveSales()
+        {
+            // // use aggregate
+            // var result = new[] { 0, 1, 3, 0, 0, 2, 1, 5, 4, 0, 0, 0, 3 }
+            //     .Aggregate(new { 
+            //         Current = 0, 
+            //         Max = 0 }, 
+            //         (acc, next) =>
+            //         {
+            //             var c = (next > 0) ? acc.Current + 1 : 0;
+            //             return new { 
+            //                     Current = c, 
+            //                     Max = Math.Max(acc.Max, c) };
+            //         });
+
+            var result = new[] { 0, 1, 3, 0, 0, 2, 1, 5, 4, 0, 0, 0, 3 }
+                .GroupAdjacent(n => n > 0)
+                .Where(g => g.Key)
+                .Max(g => g.Count());
+            WriteLine(result);
+        }
         static void ParseQuestionsUseBatchExtension()
         {
             var result = File

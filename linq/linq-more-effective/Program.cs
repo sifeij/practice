@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using static System.Console;
 
-namespace ConsoleApplication
+namespace MoreEffectiveLinq
 {
     public class Program
     {
@@ -25,6 +25,9 @@ namespace ConsoleApplication
 
             WriteLine("*************** Get Longest Book (aggregate) *************************************");
             GetLongestBookUseAggregate();
+
+            WriteLine("*************** Get Album Duration (extension) *************************************");
+            GetAlbumDuration();
         }
 
         static void RangeExpansion()
@@ -163,6 +166,17 @@ namespace ConsoleApplication
 
             // books.MaxBy(b => b.Pages); // best, but need to create the method
 
+            WriteLine(result);
+        }
+
+        static void GetAlbumDuration()
+        {
+            var result = "2:54,3:48,4:51,3:32,6:15,4:08,5:17,3:13,4:16,3:55,4:53,5:35,4:24"
+                .Split(',')
+                .Select(t => "0:" + t)
+                .Select(t => TimeSpan.Parse(t))
+                //.Aggregate((t1,t2) => t1 + t2)
+                .Sum(); // using linq extension method
             WriteLine(result);
         }
     }

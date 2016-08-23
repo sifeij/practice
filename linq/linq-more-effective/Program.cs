@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using static System.Console;
 
@@ -10,34 +11,56 @@ namespace MoreEffectiveLinq
     {
         public static void Main(string[] args)
         {
-            // WriteLine("*************** Range Expansion *************************************");
-            // RangeExpansion();
+            WriteLine("*************** Range Expansion *************************************");
+            RangeExpansion();
 
-            // WriteLine("*************** Sort By Age *************************************");
-            // SortByAge();
+            WriteLine("*************** Sort By Age *************************************");
+            SortByAge();
 
-            // WriteLine("*************** List Bishop Moves (dynamic) *************************************");
-            // ListBishopMovesDynamic();
-            // WriteLine("*************** List Bishop Moves (refactor) *************************************");
-            // ListBishopMovesRefactor();
-            // WriteLine("*************** List Bishop Moves (query) *************************************");
-            // ListBishopMovesQuery();
+            WriteLine("*************** List Bishop Moves (dynamic) *************************************");
+            ListBishopMovesDynamic();
+            WriteLine("*************** List Bishop Moves (refactor) *************************************");
+            ListBishopMovesRefactor();
+            WriteLine("*************** List Bishop Moves (query) *************************************");
+            ListBishopMovesQuery();
 
-            // WriteLine("*************** Get Longest Book (aggregate) *******************");
-            // GetLongestBookUseAggregate();
-            // WriteLine("*************** Get Longest Book (MaxBy extension) *************");
-            // GetLongestBookUseMaxByExtension();
+            WriteLine("*************** Get Longest Book (aggregate) *******************");
+            GetLongestBookUseAggregate();
+            WriteLine("*************** Get Longest Book (MaxBy extension) *************");
+            GetLongestBookUseMaxByExtension();
 
-            // WriteLine("*************** Get Album Duration (extension) *****************");
-            // GetAlbumDuration();
+            WriteLine("*************** Get Album Duration (extension) *****************");
+            GetAlbumDuration();
 
-            // WriteLine("*************** Count Pets *************************************");
-            // CountPets();
+            WriteLine("*************** Count Pets *************************************");
+            CountPets();
 
             WriteLine("*************** Swim Length Use Zip *******************************");
             GetSwimLengthPerLaneUseZip();
             WriteLine("*************** Swim Length Use Pairwise extension ****************");
             GetSwimLengthPerLaneUsePairwise();
+
+            WriteLine("*************** Parse Question Use Batch extension ****************");
+            ParseQuestionsUseBatchExtension();
+        }
+
+        static void ParseQuestionsUseBatchExtension()
+        {
+            var result = File
+                .ReadAllLines(@"questions.txt")
+                .Batch(7, b => b.ToArray())
+                .Select(b => new { 
+                    Key = b[0], 
+                    Question = b[1], 
+                    CorrectAnswer = b[2], 
+                    WrongAnswer1 = b[3], 
+                    WrongAnswer2 = b[4], 
+                    WrongAnswer3 = b[5] 
+                });
+            foreach(var item in result)
+            {
+                WriteLine($"{item.Key} {item.Question,-43}: {item.CorrectAnswer,-8} {item.WrongAnswer1,-9} {item.WrongAnswer2,-6} {item.WrongAnswer3}");
+            }
         }
 
         static void GetSwimLengthPerLaneUsePairwise()

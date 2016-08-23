@@ -44,12 +44,12 @@ namespace MoreEffectiveLinq
                 .SelectMany(r => Enumerable.Range(
                    r.First, r.Last - r.First + 1))
                 .OrderBy(r => r)
-                .Distinct();
+                .Distinct()
+                .Select(n => n.ToString())
+                //.Aggregate((curr,next) => curr + "," + next)
+		        .Concat(",");
                 
-            foreach(var i in result)
-            {
-                WriteLine(i);
-            }
+            WriteLine(result);
         }
 
         static void SortByAge()

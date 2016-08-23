@@ -14,5 +14,10 @@ namespace MoreEffectiveLinq
             }
             return total;
         }
+
+        public static string Concat(this IEnumerable<string> strings, string separator)
+        {
+            return string.Join(separator, strings);
+        }
     }
 }

@@ -25,11 +25,28 @@ namespace MoreEffectiveLinq
 
             // WriteLine("*************** Get Longest Book (aggregate) *************************************");
             // GetLongestBookUseAggregate();
-            WriteLine("*************** Get Longest Book (MaxBy extension) *************************************");
-            GetLongestBookUseMaxByExtension();
+            // WriteLine("*************** Get Longest Book (MaxBy extension) *************************************");
+            // GetLongestBookUseMaxByExtension();
 
             // WriteLine("*************** Get Album Duration (extension) *************************************");
             // GetAlbumDuration();
+
+            WriteLine("*************** Count Pets *************************************");
+            CountPets();
+        }
+
+        static void CountPets()
+        {
+            var result = "Dog,Cat,Rabbit,Dog,Dog,Lizard,Cat,Cat,Dog,Rabbit,Guinea Pig,Dog"
+                .Split(',')
+                //.GroupBy(x => (x != "Dog" && x != "Cat") ? "Other" : x)
+                //.Select(g => new { Pet = g.Key, Count = g.Count() })
+                .CountBy(x => (x != "Dog" && x != "Cat") ? "Other" : x);
+            
+            foreach(var item in result)
+            {
+                WriteLine($"{item.Key,-10}: {item.Value}");
+            }
         }
 
         static void GetAlbumDuration()

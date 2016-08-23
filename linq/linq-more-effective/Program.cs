@@ -31,8 +31,34 @@ namespace MoreEffectiveLinq
             // WriteLine("*************** Get Album Duration (extension) *************************************");
             // GetAlbumDuration();
 
-            WriteLine("*************** Count Pets *************************************");
-            CountPets();
+            // WriteLine("*************** Count Pets *************************************");
+            // CountPets();
+
+            WriteLine("*************** Swim Length *************************************");
+            GetSwimLengthPerLaneUseZip();
+        }
+
+        static void GetSwimLengthPerLaneUseZip()
+        {
+            var times = "00:45,01:32,02:18,03:01,03:44,04:31,05:19,06:01,06:47,07:35";
+
+            var result = 
+                ("00:00," + times).Split(',')
+                .Zip(times.Split(','),
+                    (s, f) => new {
+                            Start = TimeSpan.Parse("00:" + s),
+                            Finish = TimeSpan.Parse("00:" + f)
+                        })
+                .Select(q => new {
+                            Start = q.Start,
+                            Finish = q.Finish,
+                            Duration = q.Finish - q.Start 
+                        });
+
+            foreach(var item in result)
+            {
+                WriteLine($"{item.Start}-{item.Finish}: {item.Duration}");
+            }
         }
 
         static void CountPets()

@@ -12,56 +12,94 @@ namespace Cars
     {
         public static void Main(string[] args)
         {
-            // SimpleLambdaOperators();
-            // WriteLine("*********************************************************************");
-            // JoinTwoTablesWithSingleKey();
-            // WriteLine("*********************************************************************");
-            // JoinTwoTablesWithCompositKey();
-            // WriteLine("*********************************************************************");
+            SimpleLambdaOperators();
+            WriteLine("*********************************************************************");
+            JoinTwoTablesWithSingleKey();
+            WriteLine("*********************************************************************");
+            JoinTwoTablesWithCompositKey();
+            WriteLine("*********************************************************************");
 
-            // //To Get Top 2 Most Fuel Efficiency Cars Of Each Manufacturer
-            // GroupByWithQuerySyntax();
-            // WriteLine("*********************************************************************");
-            // GroupByWithExensionMethods();
-            // WriteLine("*********************************************************************");
-            // GroupJoinWithQuerySyntax();
-            // WriteLine("*********************************************************************");
-            // GroupJoinWithExtensionMethods();
-            // WriteLine("*********************************************************************");
+            //To Get Top 2 Most Fuel Efficiency Cars Of Each Manufacturer
+            GroupByWithQuerySyntax();
+            WriteLine("*********************************************************************");
+            GroupByWithExensionMethods();
+            WriteLine("*********************************************************************");
+            GroupJoinWithQuerySyntax();
+            WriteLine("*********************************************************************");
+            GroupJoinWithExtensionMethods();
+            WriteLine("*********************************************************************");
 
-            // //Get Top 3 Most Fuel Efficiency Cars Of Each Headquarter
-            // DeepGroupJoinWithQuerySyntax();
-            // WriteLine("*********************************************************************");
-            // DeepGroupJoinWithExtensionMethods();
-            // WriteLine("*********************************************************************");
+            //Get Top 3 Most Fuel Efficiency Cars Of Each Headquarter
+            DeepGroupJoinWithQuerySyntax();
+            WriteLine("*********************************************************************");
+            DeepGroupJoinWithExtensionMethods();
+            WriteLine("*********************************************************************");
 
-            // //Get max min avg per manufacturer
-            // AggregationWithQuerySyntax();
-            // WriteLine("*********************************************************************");
-            // AggregationWithExtensionMethods();
-            // WriteLine("*********************************************************************");
-        
+            //Get max min avg per manufacturer
+            AggregationWithQuerySyntax();
+            WriteLine("*********************************************************************");
+            AggregationWithExtensionMethods();
+            WriteLine("*********************************************************************");
+            
             // Linq Xml
+            WriteLine("*************** Serialize Xml To Xml Writer *************************");
             SerializeXmlToXmlWriter();
+            WriteLine("*************** Serialize Xml To Text Writer ************************");
             SerializeXmlToTextWriter();
-            CreateXml();
+            WriteLine("*************** Create Xml File ************************");
+            CreateXmlFile();
+            WriteLine("*************** Query Xml File ************************");
             QueryXml();
         }
 
         static void QueryXml()
         {
+            var ns = (XNamespace)"http://pluralsight.com/cars/2016";
+            var ex = (XNamespace)"http://pluralsight.com/cars/2016/ex";
+
             var document = XDocument.Load("fuel.xml");
 
             var query =
                 // from element in document.Descendants()
-                from element in document.Element("Cars").Elements("Car")
+                // from element in document.Element("Cars").Elements("Car")
+                from element in document
+                                .Element(ns + "Cars")?
+                                .Elements(ex + "Car") 
+                                    ?? Enumerable.Empty<XElement>()
                 where element.Attribute("Manufacturer")?.Value == "BMW"
                 select element.Attribute("Name").Value;
             
             foreach (var name in query)
             {
-                WriteLine(name);
+                WriteLine("car: " + name);
             }
+        }
+
+        static void CreateXmlFile()
+        {
+            var records = ProcessCars("fuel.csv");
+
+            var ns = (XNamespace)"http://pluralsight.com/cars/2016";
+            var ex = (XNamespace)"http://pluralsight.com/cars/2016/ex";
+
+            using (var outputStream = File.OpenWrite("fuel.xml"))
+            {
+                var document = new XDocument();
+                var cars = new XElement(ns + "Cars",
+
+                    from record in records
+                    select new XElement(ex + "Car",
+                                    new XAttribute("Name", record.Name),
+                                    new XAttribute("Combined", record.Combined),
+                                    new XAttribute("Manufacturer", record.Manufacturer))
+                );
+
+                cars.Add(new XAttribute(XNamespace.Xmlns + "ex", ex));
+                document.Add(cars);
+                document.Save(outputStream);
+            }
+            
+            // WriteLine(File.ReadAllText("fuel.xml"));
         }
 
         static void SerializeXmlToXmlWriter()
@@ -81,8 +119,7 @@ namespace Cars
                                     new XAttribute("Name", record.Name),
                                     new XAttribute("Combined", record.Combined),
                                     new XAttribute("Manufacturer", record.Manufacturer))
-                )
-                );
+                ));
                 doc.Save(xw);
             }
 
@@ -108,24 +145,6 @@ namespace Cars
 
             document.Save(tr);
             WriteLine(sb.ToString());
-        }
-
-        static void CreateXml()
-        {
-            var records = ProcessCars("fuel.csv");
-
-            var document = new XDocument(
-                new XElement("Cars",
-                    from record in records
-                    select new XElement("Car",
-                                    new XAttribute("Name", record.Name),
-                                    new XAttribute("Combined", record.Combined),
-                                    new XAttribute("Manufacturer", record.Manufacturer))
-                )
-            );
-
-            // document.Save("fuel.xml");
-            // WriteLine(File.ReadAllText("fuel.xml"));
         }
 
         static List<Car> ProcessCars(string path)

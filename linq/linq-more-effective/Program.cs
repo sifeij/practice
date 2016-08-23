@@ -23,19 +23,37 @@ namespace MoreEffectiveLinq
             // WriteLine("*************** List Bishop Moves (query) *************************************");
             // ListBishopMovesQuery();
 
-            // WriteLine("*************** Get Longest Book (aggregate) *************************************");
+            // WriteLine("*************** Get Longest Book (aggregate) *******************");
             // GetLongestBookUseAggregate();
-            // WriteLine("*************** Get Longest Book (MaxBy extension) *************************************");
+            // WriteLine("*************** Get Longest Book (MaxBy extension) *************");
             // GetLongestBookUseMaxByExtension();
 
-            // WriteLine("*************** Get Album Duration (extension) *************************************");
+            // WriteLine("*************** Get Album Duration (extension) *****************");
             // GetAlbumDuration();
 
             // WriteLine("*************** Count Pets *************************************");
             // CountPets();
 
-            WriteLine("*************** Swim Length *************************************");
+            WriteLine("*************** Swim Length Use Zip *******************************");
             GetSwimLengthPerLaneUseZip();
+            WriteLine("*************** Swim Length Use Pairwise extension ****************");
+            GetSwimLengthPerLaneUsePairwise();
+        }
+
+        static void GetSwimLengthPerLaneUsePairwise()
+        {
+            var times = "00:45,01:32,02:18,03:01,03:44,04:31,05:19,06:01,06:47,07:35";
+
+            var result = times
+                .Split(',')
+                .Select(x => TimeSpan.Parse("00:" + x))
+                .Prepend(TimeSpan.Zero)
+                .Pairwise((a, b) => b - a);
+
+            foreach(var item in result)
+            {
+                WriteLine($"Pairwise Duration: {item}");
+            }
         }
 
         static void GetSwimLengthPerLaneUseZip()
@@ -57,7 +75,7 @@ namespace MoreEffectiveLinq
 
             foreach(var item in result)
             {
-                WriteLine($"{item.Start}-{item.Finish}: {item.Duration}");
+                WriteLine($"{item.Start} - {item.Finish}: {item.Duration}");
             }
         }
 

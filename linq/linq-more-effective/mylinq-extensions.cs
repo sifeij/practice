@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace MoreEffectiveLinq
 {
@@ -65,6 +66,36 @@ namespace MoreEffectiveLinq
                 }
             }
             return counts;
+        }
+
+        public static IEnumerable<TResult> Pairwise<TSource, TResult>(
+            this IEnumerable<TSource> source, 
+            Func<TSource, TSource, TResult> resultSelector)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+            if (resultSelector == null) throw new ArgumentNullException("resultSelector");
+            return PairwiseImpl(source, resultSelector);
+        }
+
+        static IEnumerable<TResult> PairwiseImpl<TSource, TResult>(
+            this IEnumerable<TSource> source, 
+            Func<TSource, TSource, TResult> resultSelector)
+        {
+            Debug.Assert(source != null);
+            Debug.Assert(resultSelector != null);
+
+            using (var e = source.GetEnumerator())
+            {
+                if (!e.MoveNext())
+                    yield break;
+
+                var previous = e.Current;
+                while (e.MoveNext())
+                {
+                    yield return resultSelector(previous, e.Current);
+                    previous = e.Current;
+                }
+            }
         }
     }
 }

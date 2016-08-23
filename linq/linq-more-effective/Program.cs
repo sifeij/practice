@@ -10,10 +10,16 @@ namespace ConsoleApplication
     {
         public static void Main(string[] args)
         {
-            WriteLine("******************************** Range Expansion *************************************");
+            WriteLine("*************** Range Expansion *************************************");
             RangeExpansion();
-            WriteLine("******************************** Sort By Age *************************************");
+            WriteLine("*************** Sort By Age *************************************");
             SortByAge();
+            WriteLine("*************** List Bishop Moves (dynamic) *************************************");
+            ListBishopMovesDynamic();
+            WriteLine("*************** List Bishop Moves (refactor) *************************************");
+            ListBishopMovesRefactor();
+            WriteLine("*************** List Bishop Moves (query) *************************************");
+            ListBishopMovesQuery();
         }
 
         static void RangeExpansion()
@@ -61,7 +67,75 @@ namespace ConsoleApplication
             if (dateOfBirth > today.AddYears(-age)) age--;
             return age;
         }
+
         static DateTime ParseDob(string date) => DateTime.ParseExact(date.Trim(), "d/M/yyyy", CultureInfo.InvariantCulture);
     
+        static void ListBishopMovesDynamic()
+        {
+            // we start with a Bishop on c6
+            // what positions can it reach in one move?
+            // output should include b5, a4, b7, a8
+            var chessBoardPositions = Enumerable.Range('a',8)
+                .SelectMany(x => Enumerable.Range('1', 8),
+                    (f, r) => new { File = (char)f, Rank = (char)r });
+
+            var validMoves = chessBoardPositions
+                .Where(x => BishopCanMoveTo(new { File = 'c', Rank = '6' }, x))
+                .Select(x => string.Format("{0}{1}",x.File,x.Rank));
+            
+            foreach(var item in validMoves)
+            {
+                WriteLine(item);
+            }
+        }
+
+        static void ListBishopMovesRefactor()
+        {
+            var result = GetBoardPositions()
+		                    .Where(p => BishopCanMoveTo(p,"c6"));
+            foreach(var item in result)
+            {
+                WriteLine(item);
+            }
+        }
+
+        static void ListBishopMovesQuery()
+        {
+            var result = 
+                from row in Enumerable.Range('a', 8)
+                from col in Enumerable.Range('1', 8)
+                let dx = Math.Abs(row - 'c')
+                let dy = Math.Abs(col - '6')
+                where dx == dy
+                where dx != 0
+                select String.Format("{0}{1}", (char)row, (char)col);
+
+            foreach(var item in result)
+            {
+                WriteLine(item);
+            }
+        }
+
+        static bool BishopCanMoveTo(dynamic startingPosition, dynamic targetLocation)
+        {
+            var dx = Math.Abs(startingPosition.File - targetLocation.File);
+            var dy = Math.Abs(startingPosition.Rank - targetLocation.Rank);
+            return dx == dy && dx != 0;
+
+        }
+
+        static IEnumerable<string> GetBoardPositions()
+        {
+            return Enumerable.Range('a', 8).SelectMany(
+                x => Enumerable.Range('1', 8), (f, r) => 
+                    String.Format("{0}{1}",(char)f, (char)r));
+        }
+
+        static bool BishopCanMoveTo(string startPos, string targetPos)
+        {
+            var dx = Math.Abs(startPos[0] - targetPos[0]);
+            var dy = Math.Abs(startPos[1] - targetPos[1]);
+            return dx == dy && dx != 0;
+        }
     }
 }
